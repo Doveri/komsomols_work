@@ -3,8 +3,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 
-MyTcpServer::~MyTcpServer()
-{
+MyTcpServer::~MyTcpServer(){
     //mTcpSocket->close();
     mTcpServer->close();
     server_status=0;
@@ -17,7 +16,7 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
 
     if(!mTcpServer->listen(QHostAddress::Any, 33333)){
         qDebug() << "server is not started";
-    } else {
+    } else{
         server_status=1;
         qDebug() << "server is started";
     }
@@ -53,7 +52,7 @@ void MyTcpServer::slotServerRead(){
     QString task = array.left(str.size() - 2);
     QByteArray fun;
     fun = parsing(task);
-    qDebug()<<"/r/n"<<fun;
+    qDebug()<<fun;
     curr_mTcpSocket->write(fun);
 }
 

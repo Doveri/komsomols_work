@@ -33,8 +33,8 @@ QByteArray parsing(QString func_name){
         return reg(met);
     else if (func_name == "get task")
         return get_task(met);
-    else if (func_name == "get result")
+    else if (func_name == "get results")
         return get_result(met);
     else
-        return "Incorrect command((";
+        return "Incorrect command...";
 }

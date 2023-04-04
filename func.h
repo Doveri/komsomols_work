@@ -6,7 +6,6 @@
 #include <QStringList>
 #include <QDebug>
 
-
 QByteArray auth(QStringList str);
 QByteArray reg(QStringList str);
 QByteArray get_task(QStringList str);
