@@ -6,10 +6,17 @@ SingletonDestroyer Singleton::destroyer;
 Singleton::Singleton() {
     db = QSqlDatabase::addDatabase("QSQLITE");
     db.setDatabaseName("D:/workdir/komsomols_work/singleton/sqlite.db");
+    openDB();
 }
 
 void SingletonDestroyer::initialize(Singleton * p) {
     p_instance = p;
+}
+
+bool Singleton::connect(const QString& databasePath)
+{
+    // Подключение к базе данных
+    return connectToDatabase(databasePath);
 }
 
 bool Singleton::openDB() {
@@ -19,6 +26,7 @@ bool Singleton::openDB() {
     }
     return true;
 }
+
 
 QString Singleton::query(QString qw) {
     if (!openDB()) {
@@ -36,6 +44,7 @@ QString Singleton::query(QString qw) {
         while (sqlQuery.next()) {
             for(int i=0;i<sqlQuery.record().count();i++)
                 result.append(sqlQuery.value(i).toString()).append("|");
+            result.right(1);
             result.append("\n");
         }
         qDebug()<<result;
@@ -43,4 +52,22 @@ QString Singleton::query(QString qw) {
         return result;
 }
 
+bool Singleton::connectToDatabase(const QString& databasePath)
+{
+    // Создание объекта QSqlDatabase с именем "database"
+    db = QSqlDatabase::addDatabase("QSQLITE", "database");
+
+    // Установка пути к файлу базы данных
+    db.setDatabaseName(databasePath);
+
+    // Открытие базы данных
+    if (!db.open()) {
+        qDebug() << "Failed to connect to database." << db.lastError().text();
+        return false;
+    }
+
+    qDebug() << "Connected to database.";
+
+    return true;
+}
 
