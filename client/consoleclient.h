@@ -1,9 +1,10 @@
 #ifndef CONSOLECLIENT_H
 #define CONSOLECLIENT_H
+
 #include <QTcpSocket>
 #include <QDebug>
 #include <QtNetwork>
-#include <QCoreApplication>
+#include <QObject>
 
 class SingClient;
 
@@ -12,11 +13,12 @@ class SingClientDestroyer{
         SingClient * p_instance;
     public:
         ~SingClientDestroyer() { delete p_instance;}
-        void initialize(SingClient * p){p_instance = p;};
+        void initialize(SingClient * p){p_instance = p;}
 };
 
 
-class SingClient : public QObject{
+class SingClient : public QObject
+{
     Q_OBJECT
 private:
         static SingClient * p_instance;
@@ -24,33 +26,17 @@ private:
         QTcpSocket* socket;
 
     protected:
-        SingClient(){
-            socket = new QTcpSocket;
-            socket->connectToHost("127.0.0.1", 33333);
-            if(socket->waitForConnected(3000)){
-                qDebug() << "Connected!";
-            }
-            else{
-                qDebug() << "Not connected!";
-            }
-        }
+        explicit SingClient();
         SingClient(const SingClient& ) = delete ;
         SingClient& operator = (SingClient &) = delete;
-        ~SingClient() {socket->close();}
+        ~SingClient();
         friend class SingClientDestroyer;
-        void readyRead();
     public:
-        static SingClient* getInstance(){
-            if (!p_instance){
-                p_instance = new SingClient();
-                destroyer.initialize(p_instance);
-            }
-            return p_instance;
-        }
-        bool sendToServer(QString msg){
-        socket->write(msg.toUtf8());
-        return true;
-        };
+        static SingClient* getInstance();
+        bool sendToServer(QString);
+    protected slots:
+        void slot_readFromServer();
+    signals:
 };
 
 #endif // CONSOLECLIENT_H
