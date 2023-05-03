@@ -1,6 +1,6 @@
 #ifndef SINGLETON_H
 #define SINGLETON_H
-#include <QSqlDataBase>
+#include <QSqlDatabase>
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QSqlRecord>
