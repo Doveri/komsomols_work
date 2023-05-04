@@ -18,6 +18,7 @@ SingClient* SingClient::getInstance() {
 SingClient::~SingClient()
 {
     socket->close();
+    delete p_instance;
 }
 
 bool SingClient::sendToServer(QString msg)
@@ -33,6 +34,8 @@ bool SingClient::sendToServer(QString msg)
             return false;
 }
 }
+
+
 void SingClient::slot_readFromServer()
 {
     QByteArray data = socket->readAll(); // считываем данные из сокета
