@@ -1,7 +1,7 @@
 #include "mytcpserver.h"
 #include "func.h"
 #include <QDebug>
-#include <QCoreApplication>
+#include <QtSql>
 
 MyTcpServer::~MyTcpServer(){
     //mTcpSocket->close();
@@ -19,6 +19,8 @@ MyTcpServer::MyTcpServer(QObject *parent) : QObject(parent){
     } else{
         server_status=1;
         qDebug() << "server is started";
+        //qDebug() << "Connected to database";
+//        qDebug()<<Singleton::getInstance()->query("SELECT * FROM demo;");
     }
 }
 
@@ -46,10 +48,10 @@ void MyTcpServer::slotServerRead(){
     array="";
     array.append(str.toUtf8());
 
-    QByteArray mes = array.left(str.size() - 2);
+    QByteArray mes = array.left(str.size());
     qDebug()<<mes;
     curr_mTcpSocket->write(mes);
-    QString task = array.left(str.size() - 2);
+    QString task = array.left(str.size());
     QByteArray fun;
     fun = parsing(task);
     qDebug()<<fun;
@@ -61,3 +63,5 @@ void MyTcpServer::slotClientDisconnected(){
     curr_mTcpSocket->close();
     curr_mTcpSocket->deleteLater();
 }
+
+

@@ -3,12 +3,12 @@
 
 QString gettask(int n)
 {
-    return "task task task task task task task task " + QString::number(n);
+    return "task " + QString::number(n);
 }
 
 QString getvariant(int n)
 {
-    return "variant variant \n variant variant \nvariant variant " + QString::number(n);
+    return "variant " + QString::number(n);
 }
 
 

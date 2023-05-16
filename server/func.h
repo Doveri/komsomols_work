@@ -11,5 +11,6 @@ QByteArray reg(QStringList str);
 QByteArray get_task(QStringList str);
 QByteArray get_result(QStringList str);
 QByteArray parsing(QString str);
+QByteArray conn(QStringList str);
 
 #endif // FUNC_H

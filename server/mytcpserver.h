@@ -3,11 +3,13 @@
 #include <QObject>
 #include <QTcpServer>
 #include <QTcpSocket>
-
+#include "singleton.h"
 #include <QtNetwork>
 #include <QByteArray>
 #include <QDebug>
 #include <QList>
+#include <QtSql>
+
 class MyTcpServer : public QObject{
     Q_OBJECT
 public:
@@ -16,7 +18,6 @@ public:
 public slots:
     void slotNewConnection();
     void slotClientDisconnected();
-
     void slotServerRead();
     //void slotReadClient();
 private:

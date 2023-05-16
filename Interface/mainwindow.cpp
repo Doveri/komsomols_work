@@ -5,9 +5,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    this->client = SingClient::getInstance();
     ui->setupUi(this);
-    window = new SecondTask;
-
 }
 
 MainWindow::~MainWindow()
@@ -34,3 +33,9 @@ void MainWindow::on_OutBut_clicked()
 {
     close();
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    client->sendToServer("something");
+}
+

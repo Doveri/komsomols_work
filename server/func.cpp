@@ -1,5 +1,6 @@
 #include "func.h"
 #include <QDebug>
+#include "singleton.h"
 
 QByteArray auth(QStringList str){
     QByteArray stub;
@@ -25,6 +26,15 @@ QByteArray get_result(QStringList str){
     return stub;
 }
 
+QByteArray showDB(QStringList str){
+    QByteArray stub;
+    if (!Singleton::getInstance()->connect("C:/workdir/komsomols_work/singleton/sqlite.db"))
+        stub.append("Failed to connect to database :(");
+    else
+        stub.append(Singleton::getInstance()->query("SELECT * FROM demo;").toUtf8());
+    return stub;
+}
+
 QByteArray parsing(QString func_name){
     QStringList met = func_name.split(' ');
     if(func_name=="auth")
@@ -35,6 +45,9 @@ QByteArray parsing(QString func_name){
         return get_task(met);
     else if (func_name == "get results")
         return get_result(met);
-    else
-        return "Incorrect command...";
+    else if (func_name == "showDB")
+        return showDB(met);
+    //else
+        //return "Incorrect command...";
 }
+
