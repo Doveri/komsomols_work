@@ -5,6 +5,7 @@
 #include <QList>
 #include <QStringList>
 #include <QDebug>
+#include "singleton.h"
 
 QByteArray auth(QStringList str);
 QByteArray reg(QStringList str);

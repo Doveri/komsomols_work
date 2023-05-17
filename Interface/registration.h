@@ -14,11 +14,10 @@ class registration : public QDialog
 public:
     explicit registration(QWidget *parent = nullptr);
     ~registration();
-
 private slots:
     void on_pushButton_clicked();
-
 private:
+
     Ui::registration *ui;
     bool reg(QString, QString);
 };

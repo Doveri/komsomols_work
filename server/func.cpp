@@ -1,6 +1,5 @@
 #include "func.h"
-#include <QDebug>
-#include "singleton.h"
+
 
 QByteArray auth(QStringList str){
     QByteArray stub;
@@ -47,7 +46,7 @@ QByteArray parsing(QString func_name){
         return get_result(met);
     else if (func_name == "showDB")
         return showDB(met);
-    //else
-        //return "Incorrect command...";
+    else
+        return "Incorrect command...";
 }
 

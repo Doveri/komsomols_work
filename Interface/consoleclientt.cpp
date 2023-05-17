@@ -1,4 +1,4 @@
-#include "consoleclient.h"
+#include "consoleclientt.h"
 SingClient::SingClient()
 {
     socket = new QTcpSocket;

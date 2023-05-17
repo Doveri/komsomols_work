@@ -1,5 +1,5 @@
-#ifndef CONSOLECLIENT_H
-#define CONSOLECLIENT_H
+#ifndef CONSOLECLIENTT_H
+#define CONSOLECLIENTT_H
 
 #include <QTcpSocket>
 #include <QDebug>
@@ -39,4 +39,4 @@ private:
     signals:
 };
 
-#endif // CONSOLECLIENT_H
+#endif // CONSOLECLIENTT_H

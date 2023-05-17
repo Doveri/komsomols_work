@@ -7,7 +7,7 @@
 #include <QVariant>
 #include <QDebug>
 #include <QtCore>
-#include "mytcpserver.h"
+
 class Singleton;
 
 class SingletonDestroyer

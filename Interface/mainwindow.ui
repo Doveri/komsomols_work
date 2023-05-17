@@ -20,31 +20,10 @@
       <x>0</x>
       <y>46</y>
       <width>811</width>
-      <height>141</height>
+      <height>147</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QPushButton" name="FirstTask">
-       <property name="text">
-        <string>1 таск</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="ThirdTask">
-       <property name="text">
-        <string>3 таск</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="OutBut">
-       <property name="text">
-        <string>Закрыть</string>
-       </property>
-      </widget>
-     </item>
      <item row="0" column="1">
       <widget class="QPushButton" name="SecondTask">
        <property name="text">
@@ -52,20 +31,49 @@
        </property>
       </widget>
      </item>
+     <item row="4" column="0">
+      <widget class="QPushButton" name="ThirdTask">
+       <property name="text">
+        <string>3 таск</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Не обновлено</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QPushButton" name="FirstTask">
+       <property name="text">
+        <string>1 таск</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="OutBut">
+       <property name="text">
+        <string>Закрыть</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Не обновлено</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Не обновлено</string>
+       </property>
+      </widget>
+     </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>310</x>
-      <y>0</y>
-      <width>102</width>
-      <height>35</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Да</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

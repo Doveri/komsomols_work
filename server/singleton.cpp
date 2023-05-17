@@ -1,3 +1,4 @@
+#include "mytcpserver.h"
 #include "singleton.h"
 
 Singleton * Singleton::p_instance;

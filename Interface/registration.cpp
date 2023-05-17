@@ -19,13 +19,13 @@ void registration::on_pushButton_clicked()
     QString password = ui->pass->text();
     if (reg(login, password) == 1){
         QMessageBox::information(this, "Уведомление", "Авторизация прошла успешно");
-        hide();
+        close();
     } else {
         QMessageBox::warning(this, "Уведомление", "Вы не авторизировались, попробуйте еще раз");
     }
 }
 
-bool reg (QString log, QString pass){
+bool registration::reg (QString log, QString pass){
     if (log == "111" && pass == "222"){
         return 1;
     } else {

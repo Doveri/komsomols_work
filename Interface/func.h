@@ -1,6 +1,6 @@
 #ifndef FUN_H
 #define FUN_H
-#include "client/consoleclient.h"
+#include "consoleclientt.h"
 
 #include <QString>
 #include <QtWidgets/QWidget>

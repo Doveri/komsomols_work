@@ -16,26 +16,24 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_FirstTask_clicked()
 {
-    window->setTaskNumber(1);
+    client->sendToServer("get task");
+    ui->label->setText(client->sendToServer("showDB"));
 }
 
 void MainWindow::on_SecondTask_clicked()
 {
-    window->setTaskNumber(2);
+    client->sendToServer("get task");
+    ui->label_2->setText(client->sendToServer("showDB"));
 }
 
 void MainWindow::on_ThirdTask_clicked()
 {
-    window->setTaskNumber(3);
+    client->sendToServer("get task");
+    ui->label_3->setText(client->sendToServer("showDB"));
 }
 
 void MainWindow::on_OutBut_clicked()
 {
     close();
-}
-
-void MainWindow::on_pushButton_clicked()
-{
-    client->sendToServer("something");
 }
 

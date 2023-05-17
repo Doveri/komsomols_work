@@ -3,7 +3,7 @@
 #include "registration.h"
 #include "secondtask.h"
 #include <QMainWindow>
-#include "client/consoleclient.h"
+#include "consoleclientt.h"
 #include "func.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -23,10 +23,10 @@ private slots:
     void on_SecondTask_clicked();
     void on_ThirdTask_clicked();
     void on_OutBut_clicked();
-    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     SecondTask *window;
+
 };
 #endif // MAINWINDOW_H
