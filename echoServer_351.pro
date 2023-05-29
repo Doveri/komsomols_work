@@ -1,34 +1,26 @@
-QT += core gui widgets network
+QT -= gui
+QT += network
+QT += sql
+QT += core
+CONFIG += c++17 console
+CONFIG -= app_bundle
 
-CONFIG += c++17
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    func.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    registration.cpp \
-    secondtask.cpp \
-    consoleclientt.cpp \
-    taskswindow.cpp
-
-HEADERS += \
-    func.h \
-    mainwindow.h \
-    registration.h \
-    secondtask.h \
-    consoleclientt.h \
-    taskswindow.h
-
-FORMS += \
-    mainwindow.ui \
-    registration.ui \
-    secondtask.ui \
-    taskswindow.ui
+        function.cpp \
+        main.cpp \
+        mytcpserver.cpp \
+        singleton.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+HEADERS += \
+    function.h \
+    mytcpserver.h \
+    singleton.h
