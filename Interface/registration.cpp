@@ -1,20 +1,19 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "registration.h"
+#include "ui_registration.h"
 #include <QMessageBox>
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+registration::registration(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::registration)
 {
-    this->client = SingClient::getInstance();
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
+registration::~registration()
 {
     delete ui;
 }
 
-void MainWindow::on_auth_clicked()
+void registration::on_pushButton_clicked()
 {
     QString login = ui->login->text();
     QString password = ui->pass->text();
@@ -26,18 +25,10 @@ void MainWindow::on_auth_clicked()
     }
 }
 
-bool MainWindow::reg (QString log, QString pass){
-
-}
-
-void MainWindow::on_reg_clicked()
-{
-
-}
-
-
-void MainWindow::on_get_stats_clicked()
-{
-    client->sendToServer("get_stats ");
-
+bool registration::reg (QString log, QString pass){
+    if (log == "111" && pass == "222"){
+        return 1;
+    } else {
+        return 0;
+    }
 }

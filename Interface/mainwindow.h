@@ -1,8 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
-#include "secondwindow.h"
+#include "secondtask.h"
 #include <QMainWindow>
-
+#include "consoleclientt.h"
+#include "func.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -12,20 +13,21 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    SingClient* client;
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 private slots:
-    void on_pushButton_clicked();
+    void on_auth_clicked();
 
-    void on_pushButton_2_clicked();
+    void on_reg_clicked();
 
-    void on_pushButton_3_clicked();
-
-    void on_pushButton_4_clicked();
+    void on_get_stats_clicked();
 
 private:
+    bool reg(QString, QString);
     Ui::MainWindow *ui;
-    SecondWindow *window;
+    SecondTask *window;
+
 };
 #endif // MAINWINDOW_H
