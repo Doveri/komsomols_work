@@ -19,7 +19,6 @@ public:
 private slots:
     void slotNewConnection();
     void slotClientDisconnected();
-    void slotReadClient();
     void slotServerRead();
     void connectToDatabase();
     void sendToClient(QString message);

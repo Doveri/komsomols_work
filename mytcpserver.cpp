@@ -58,17 +58,6 @@ void MyTcpServer::slotServerRead()
     if (!clientSocket->canReadLine()) return;
 
     // Читаем строку из сокета и выводим сообщение о запросе в консоль
-    QString request = clientSocket->readLine().trimmed();
-    qDebug() << "Request received: " << request;
-
-    // Обрабатываем запрос и отправляем ответ клиенту
-    QString response = parsing(request);
-    sendToClient(response);
-}
-
-// Метод чтения данных от клиента, который не используется в данном коде
-void MyTcpServer::slotReadClient()
-{
     QString request;
     while (clientSocket->bytesAvailable()) {
         QByteArray data = clientSocket->readAll();
@@ -77,6 +66,7 @@ void MyTcpServer::slotReadClient()
     request = request.trimmed();
     qDebug() << "Request received: " << request;
 
+    // Обрабатываем запрос и отправляем ответ клиенту
     QString response = parsing(request);
     sendToClient(response);
 }
