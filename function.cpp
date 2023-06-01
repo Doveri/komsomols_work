@@ -7,7 +7,6 @@ QString parsing(QString request)
     QStringList parts = request.split(" ");
     QString command = parts[0];
     QString response = "";
-
     // Обрабатываем различные команды
     if (command == "reg") {
         // Получаем логин и пароль пользователя из параметров команды
@@ -67,16 +66,20 @@ QString parsing(QString request)
         QString login = parts[2];
         QString password = parts[3];
 
-        // Если пользователь авторизован, получаем случайные ребра и отправляем их клиенту
+        // Если пользователь авторизован, получаем случайные ребра, генерируем код Прюфера и отправляем их клиенту
         if (authUser(login, password)) {
             QVector<QPair<int, int>> edges = getRandomEdges();
-            // Формируем строку с ребрами в формате "u1,v1 u2,v2 u3,v3 ..."
-            QStringList edgeStrings;
-            for (auto edge : edges) {
-                edgeStrings.append(QString::number(edge.first) + "," + QString::number(edge.second));
-            }
+            // Формируем строку с ребрами
+            QString edgeString = edgesToString(edges);
 
-            response = "Edges: " + edgeStrings.join(" ");
+            // Generate Prufer code from edges
+            QVector<int> pruferCode = pruferCodeFromEdges(edges);
+
+            // Add task to tasks table with edges as task data and Prufer code as answers
+            addTaskToDatabase(login, edges, pruferCode, 1);
+
+            // Формируем ответ сервера
+            response = "Edges: " + edgeString;
         } else {
             response = "You are not authorized!";
         }
@@ -85,19 +88,21 @@ QString parsing(QString request)
         QString login = parts[2];
         QString password = parts[3];
 
-        // Если пользователь авторизован, получаем случайный код Прюфера и отправляем его клиенту
+        // Если пользователь авторизован, добавляем задачу в таблицу tasks с task_type = 2
         if (authUser(login, password)) {
+            // Генерируем случайный код Прюфера
             QVector<int> pruferCode = getRandomPruferCode();
 
-            // Преобразуем вектор в список строк
-            QStringList pruferCodeStrings;
-            for (int i = 0; i < pruferCode.size(); i++) {
-                pruferCodeStrings.append(QString::number(pruferCode[i]));
-            }
+            // Декодируем код Прюфера
+            QVector<QPair<int, int>> edges = pruferDecode(pruferCode);
 
-            // Формируем строку с кодом Прюфера в формате "n1 n2 n3 ..."
-            QString pruferCodeString = pruferCodeStrings.join(" ");
+            // Преобразуем вектор кода Прюфера в строку
+            QString pruferCodeString = pruferCodeToString(pruferCode);
 
+            // Добавляем задачу в таблицу tasks with Prufer code as task data and decoded edges as answers
+            addTaskToDatabase(login, edges, pruferCode, 2);
+
+            // Формируем ответ сервера в формате "Prufer code: x1 x2 x3 ..."
             response = "Prufer code: " + pruferCodeString;
         } else {
             response = "You are not authorized!";
@@ -133,6 +138,61 @@ QString parsing(QString request)
     return response;
 }
 
+void addTaskToDatabase(QString login, QVector<QPair<int, int>> edges, QVector<int> pruferCode, int taskType) {
+    // Получаем объект класса Singleton для работы с базой данных
+    Singleton& db = Singleton::getInstance();
+
+    // Преобразуем вектор ребер в строку
+    QString edgeString = edgesToString(edges);
+
+    // Преобразуем вектор кода Прюфера в строку
+    QString pruferCodeString = pruferCodeToString(pruferCode);
+
+    // Добавляем задачу в таблицу tasks
+    QSqlQuery q(db.db);
+    q.prepare("INSERT INTO tasks (user_id, task_type, task_data, answers) VALUES (:user_id, :task_type, :task_data, :answers);");
+    q.bindValue(":user_id", getUserId(login));
+    q.bindValue(":task_type", taskType);
+
+    if (taskType == 1) {
+        // Добавляем сгенерированный список ребер в качестве task_data
+        q.bindValue(":task_data", edgeString);
+
+        // Добавляем сгенерированный код Прюфера в качестве answers
+        q.bindValue(":answers", pruferCodeString);
+    } else if (taskType == 2) {
+        // Добавляем сгенерированный код Прюфера в качестве task_data
+        q.bindValue(":task_data", pruferCodeString);
+
+        // Декодируем код Прюфера
+        QVector<QPair<int, int>> decodedEdges = pruferDecode(pruferCode);
+
+        // Преобразуем вектор ребер в строку
+        QString decodedEdgeString = edgesToString(decodedEdges);
+
+        // Добавляем декодированный список ребер в качестве answers
+        q.bindValue(":answers", decodedEdgeString);
+    }
+
+    bool success = q.exec();
+    if (success) {
+        qDebug() << "Task added to database!";
+    } else {
+        qDebug() << "Error adding task to database: " << q.lastError().text();
+    }
+}
+
+int getUserId(QString login) {
+    Singleton& db = Singleton::getInstance();
+    QSqlQuery q(db.db);
+    q.prepare("SELECT id FROM users WHERE login = :login");
+    q.bindValue(":login", login);
+    if (q.exec() && q.next()) {
+        return q.value(0).toInt();
+    } else {
+        return -1; // return -1 если пользователь не найден
+    }
+}
 
 // Метод для регистрации нового пользователя в базе данных
 bool registerUser(QString login, QString password)
@@ -188,7 +248,10 @@ QStringList getUsers()
         qDebug() << "Error selecting users!";
         qDebug() << q.lastError().text();
     }
-
+    QVector <QPair<int, int>> edges = {{1, 2}, {1, 7}, {1, 8}, {2, 6}, {3, 5}, {4, 5}, {5, 6}, {5, 9}};
+    QVector<int> pruferCode = pruferCodeFromEdges(edges);
+    QString pruferCodeStr = pruferCodeToString(pruferCode);
+    qDebug() << pruferCodeStr;
     // Получаем список всех пользователей из результата запроса
     while (q.next()) {
         users.append(q.value(0).toString());
@@ -205,7 +268,7 @@ QStringList getStat()
     // Подготавливаем запрос на выборку статистики из базы данных
     QSqlQuery q(db.db);
     QStringList stat;
-    if (!q.exec("SELECT * FROM demo")) {
+    if (!q.exec("SELECT * FROM tasks")) {
         qDebug() << "Error selecting stat!";
         qDebug() << q.lastError().text();
     }
@@ -226,7 +289,7 @@ bool cleanDatabase()
 
     // Подготавливаем запрос на удаление всех пользователей из базы данных
     QSqlQuery q(db.db);
-    if (!q.exec("DELETE FROM users")) {
+    if (!q.exec("DELETE FROM users") || !q.exec("DELETE FROM tasks")) {
         qDebug() << "Error cleaning database!";
         qDebug() << q.lastError().text();
         return false;
@@ -240,7 +303,7 @@ QVector<QPair<int, int>> getRandomEdges()
     QVector<QPair<int, int>> edges;
     QSet<QPair<int, int>> edgeSet;
 
-    while (edges.size() < 8)
+    while (edges.size() < 7)
     {
         int u = rand() % 10;
         int v = rand() % 10;
@@ -271,7 +334,7 @@ QVector<int> getRandomPruferCode()
 }
 
 
-QVector<int> pruferCode(QVector<QPair<int,int>> edges)
+QVector<int> pruferCodeFromEdges(QVector<QPair<int,int>> edges)
 {
     QVector<int> pruf_code;
     while (edges.size() > 1)
@@ -349,6 +412,22 @@ QVector<QPair<int,int>> pruferDecode(QVector<int> c)
     nodes.push_back({v[0], v[1]});
 
     return nodes;
+}
+
+QString edgesToString(QVector<QPair<int, int>> edges) {
+    QStringList edgeStrings;
+    for (auto edge : edges) {
+        edgeStrings.append(QString::number(edge.first) + "," + QString::number(edge.second));
+    }
+    return edgeStrings.join(" ");
+}
+
+QString pruferCodeToString(QVector<int> pruferCode) {
+    QStringList pruferCodeStringList;
+    for (int i = 0; i < pruferCode.size(); i++) {
+        pruferCodeStringList.append(QString::number(pruferCode[i]));
+    }
+    return pruferCodeStringList.join(" ");
 }
 
 // Stub for get_task3()

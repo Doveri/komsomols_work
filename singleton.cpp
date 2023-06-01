@@ -24,29 +24,32 @@ bool Singleton::connectToDB()
 
     // Проверяем, существует ли таблица "users"
     QSqlQuery query(db);
-    bool success = query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='users';");
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS users ("
+                              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "login TEXT NOT NULL,"
+                              "password TEXT NOT NULL"
+                              ");");
 
     if (!success) {
-        qDebug() << "Error checking for table: " << query.lastError().text();
+        qDebug() << "Error creating table 'users': " << query.lastError().text();
         db.close();
         return false;
     }
 
-    if (query.next()) {
-        qDebug() << "Table 'users' already exists.";
-    } else {
-        qDebug() << "Table 'users' does not exist. Creating...";
-        success = query.exec("CREATE TABLE users ("
-                             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                             "login TEXT NOT NULL,"
-                             "password TEXT NOT NULL"
-                             ");");
+    // Проверяем, существует ли таблица "tasks"
+    success = query.exec("CREATE TABLE IF NOT EXISTS tasks ("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                          "user_id INTEGER NOT NULL,"
+                          "task_type INTEGER NOT NULL,"
+                          "task_data TEXT NOT NULL,"
+                          "answers TEXT,"
+                          "FOREIGN KEY (user_id) REFERENCES users(id)"
+                          ");");
 
-        if (!success) {
-            qDebug() << "Error creating table: " << query.lastError().text();
-            db.close();
-            return false;
-        }
+    if (!success) {
+        qDebug() << "Error creating table 'tasks': " << query.lastError().text();
+        db.close();
+        return false;
     }
 
     qDebug() << "Database connected!";
