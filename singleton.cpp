@@ -21,6 +21,34 @@ bool Singleton::connectToDB()
         qDebug() << db.lastError().text();
         return false;
     }
+
+    // Проверяем, существует ли таблица "users"
+    QSqlQuery query(db);
+    bool success = query.exec("SELECT name FROM sqlite_master WHERE type='table' AND name='users';");
+
+    if (!success) {
+        qDebug() << "Error checking for table: " << query.lastError().text();
+        db.close();
+        return false;
+    }
+
+    if (query.next()) {
+        qDebug() << "Table 'users' already exists.";
+    } else {
+        qDebug() << "Table 'users' does not exist. Creating...";
+        success = query.exec("CREATE TABLE users ("
+                             "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                             "login TEXT NOT NULL,"
+                             "password TEXT NOT NULL"
+                             ");");
+
+        if (!success) {
+            qDebug() << "Error creating table: " << query.lastError().text();
+            db.close();
+            return false;
+        }
+    }
+
     qDebug() << "Database connected!";
     return true;
 }

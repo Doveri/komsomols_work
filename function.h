@@ -20,8 +20,10 @@ QStringList getStat();
 QStringList getUsers();
 QVector<int> pruferCode(QVector<QPair<int,int>> edges);
 QVector<QPair<int,int>> pruferDecode(QVector<int> c);
-QVector<QPair<int, int>> getRandomEdges(int n);
+QVector<QPair<int, int>> getRandomEdges();
 QVector<int> getRandomPruferCode();
+QString get_task3(QString login, QString password);
+QString get_task4(QString login, QString password);
 
 
 #endif // FUNCTION_H

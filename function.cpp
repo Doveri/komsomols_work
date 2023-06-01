@@ -62,12 +62,77 @@ QString parsing(QString request)
         } else {
             response = "Error cleaning database!";
         }
+    } else if (command == "get_task" && parts[1] == "1") {
+        // Получаем логин и пароль пользователя из параметров команды
+        QString login = parts[2];
+        QString password = parts[3];
+
+        // Если пользователь авторизован, получаем случайные ребра и отправляем их клиенту
+        if (authUser(login, password)) {
+            QVector<QPair<int, int>> edges = getRandomEdges();
+            // Формируем строку с ребрами в формате "u1,v1 u2,v2 u3,v3 ..."
+            QStringList edgeStrings;
+            for (auto edge : edges) {
+                edgeStrings.append(QString::number(edge.first) + "," + QString::number(edge.second));
+            }
+
+            response = "Edges: " + edgeStrings.join(" ");
+        } else {
+            response = "You are not authorized!";
+        }
+    } else if (command == "get_task" && parts[1] == "2") {
+        // Получаем логин и пароль пользователя из параметров команды
+        QString login = parts[2];
+        QString password = parts[3];
+
+        // Если пользователь авторизован, получаем случайный код Прюфера и отправляем его клиенту
+        if (authUser(login, password)) {
+            QVector<int> pruferCode = getRandomPruferCode();
+
+            // Преобразуем вектор в список строк
+            QStringList pruferCodeStrings;
+            for (int i = 0; i < pruferCode.size(); i++) {
+                pruferCodeStrings.append(QString::number(pruferCode[i]));
+            }
+
+            // Формируем строку с кодом Прюфера в формате "n1 n2 n3 ..."
+            QString pruferCodeString = pruferCodeStrings.join(" ");
+
+            response = "Prufer code: " + pruferCodeString;
+        } else {
+            response = "You are not authorized!";
+        }
+    } else if (command == "get_task" && parts[1] == "3") {
+        // Получаем логин и пароль пользователя из параметров команды
+        QString login = parts[2];
+        QString password = parts[3];
+
+        // Если пользователь авторизован, вызываем функцию get_task3() и отправляем ее результат клиенту
+        if (authUser(login, password)) {
+            QString task3 = get_task3(login, password);
+            response = task3;
+        } else {
+            response = "You are not authorized!";
+        }
+    } else if (command == "get_task" && parts[1] == "4") {
+        // Получаем логин и пароль пользователя из параметров команды
+        QString login = parts[2];
+        QString password = parts[3];
+
+        // Если пользователь авторизован, вызываем функцию get_task4() и отправляем ее результат клиенту
+        if (authUser(login, password)) {
+            QString task4 = get_task4(login, password);
+            response = task4;
+        } else {
+            response = "You are not authorized!";
+        }
     } else {
         response = "Unknown command!";
     }
 
     return response;
 }
+
 
 // Метод для регистрации нового пользователя в базе данных
 bool registerUser(QString login, QString password)
@@ -170,12 +235,12 @@ bool cleanDatabase()
 }
 
 
-QVector<QPair<int, int>> getRandomEdges(int n)
+QVector<QPair<int, int>> getRandomEdges()
 {
     QVector<QPair<int, int>> edges;
     QSet<QPair<int, int>> edgeSet;
 
-    while (edges.size() < n)
+    while (edges.size() < 8)
     {
         int u = rand() % 10;
         int v = rand() % 10;
@@ -286,3 +351,14 @@ QVector<QPair<int,int>> pruferDecode(QVector<int> c)
     return nodes;
 }
 
+// Stub for get_task3()
+QString get_task3(QString login, QString password)
+{
+    return "Task 3: place to generate a variant for " + login;
+}
+
+// Stub for get_task4()
+QString get_task4(QString login, QString password)
+{
+    return "Task 4: place to generate a variant for " + login;
+}
