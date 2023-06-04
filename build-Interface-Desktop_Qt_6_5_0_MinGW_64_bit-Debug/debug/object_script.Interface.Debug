@@ -1,0 +1,11 @@
+debug/main.o
+debug/mainwindow.o
+debug/registration.o
+debug/secondtask.o
+debug/consoleclientt.o
+debug/taskswindow.o
+debug/moc_mainwindow.o
+debug/moc_registration.o
+debug/moc_secondtask.o
+debug/moc_consoleclientt.o
+debug/moc_taskswindow.o

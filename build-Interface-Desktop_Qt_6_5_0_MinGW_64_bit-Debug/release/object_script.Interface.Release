@@ -1,0 +1,11 @@
+release/main.o
+release/mainwindow.o
+release/registration.o
+release/secondtask.o
+release/consoleclientt.o
+release/taskswindow.o
+release/moc_mainwindow.o
+release/moc_registration.o
+release/moc_secondtask.o
+release/moc_consoleclientt.o
+release/moc_taskswindow.o
