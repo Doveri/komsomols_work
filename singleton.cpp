@@ -27,7 +27,8 @@ bool Singleton::connectToDB()
     bool success = query.exec("CREATE TABLE IF NOT EXISTS users ("
                               "id INTEGER PRIMARY KEY AUTOINCREMENT,"
                               "login TEXT NOT NULL,"
-                              "password TEXT NOT NULL"
+                              "password TEXT NOT NULL,"
+                              "rate INTEGER DEFAULT 0"
                               ");");
 
     if (!success) {

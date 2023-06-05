@@ -7,11 +7,30 @@
 #include <QPair>
 #include <QHash>
 #include <cstdlib>
-#include <QSet>
+#include <iostream>
+#include <vector>
+#include <unordered_map>
 #include <algorithm>
+#include <random>
+#include <utility>
+#include <sstream>
+#include <string>
+
 
 #include "singleton.h"
 
+
+// Define edge structure for Kruskal's algorithm
+struct Edge {
+    int u, v, weight;
+};
+bool cmp(Edge a, Edge b);
+int findParent(int v, QVector<int>& parent);
+void join(int u, int v, QVector<int>& parent);
+QVector<Edge> findLowestWeightedFrame(int n, QVector<Edge>& edges);
+
+std::vector<std::pair<int, int>> getRandomStdEdges();
+std::vector<int> pruferCodeFromStdEdges(std::vector<std::pair<int, int>> edges);
 QString parsing(QString request);
 bool registerUser(QString login, QString password);
 bool authUser(QString login, QString password);
@@ -28,6 +47,8 @@ int getUserId(QString login);
 void addTaskToDatabase(QString login, QVector<QPair<int, int>> edges, QVector<int> pruferCode, int taskType);
 QString edgesToString(QVector<QPair<int, int>> edges);
 QString pruferCodeToString(QVector<int> pruferCode);
+bool checkAnswer(QString login, QString password, int taskType, QString userAnswer);
+int checkRating(QString login, QString password);
 
 #endif // FUNCTION_H
 
