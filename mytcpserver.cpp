@@ -27,7 +27,8 @@ void MyTcpServer::slotNewConnection()
     qDebug() << "New user connected!";
 
     // Получаем указатель на сокет клиента и устанавливаем связь между сигналами readyRead и disconnected и соответствующими слотами
-    clientSocket = nextPendingConnection();
+    QTcpSocket* clientSocket = nextPendingConnection();
+    clientSockets.append(clientSocket);
     connect(clientSocket, &QTcpSocket::readyRead, this, &MyTcpServer::slotServerRead);
     connect(clientSocket, &QTcpSocket::disconnected, this, &MyTcpServer::slotClientDisconnected);
 }
@@ -37,6 +38,10 @@ void MyTcpServer::slotClientDisconnected()
 {
     qDebug() << "User disconnected!";
 
+    // Получаем дескриптор сокета клиента и удаляем его из списка
+    QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
+    clientSockets.remove(clientSocket->socketDescriptor());
+
     // Удаляем объект сокета клиента
     clientSocket->deleteLater();
 }
@@ -44,6 +49,9 @@ void MyTcpServer::slotClientDisconnected()
 // Слот, вызываемый при чтении данных от клиента
 void MyTcpServer::slotServerRead()
 {
+    // Получаем указатель на сокет клиента, от которого пришли данные
+    QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
+
     // Проверяем, можно ли прочитать строку из сокета
     if (!clientSocket->canReadLine()) return;
 
@@ -54,11 +62,11 @@ void MyTcpServer::slotServerRead()
         request += QString::fromUtf8(data);
     }
     request = request.trimmed();
-    qDebug() << "Request received: " << request;
+    qDebug() << "Request received from client " << clientSocket->socketDescriptor() << ": " << request;
 
     // Обрабатываем запрос и отправляем ответ клиенту
     QString response = parsing(request);
-    sendToClient(response);
+    clientSocket->write(response.toUtf8());
 }
 
 // Метод для соединения с базой данных

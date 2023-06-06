@@ -26,6 +26,7 @@ private slots:
 
 private:
     QTcpSocket* clientSocket;
+    QList<QTcpSocket*> clientSockets;
 };
 
 #endif // MYTCPSERVER_H
