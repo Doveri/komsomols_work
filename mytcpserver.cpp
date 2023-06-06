@@ -16,20 +16,10 @@ MyTcpServer::MyTcpServer(QObject *parent) : QTcpServer(parent)
 }
 
 // Метод для отправки сообщений клиенту
-void MyTcpServer::sendToClient(QString message)
-{
-    // Создаем объект QByteArray и QDataStream и записываем сообщение в блок данных
-    QByteArray block;
-    QDataStream out(&block, QIODevice::WriteOnly);
-    out << quint16(0) << message;
-    out.device()->seek(0);
-
-    // Записываем размер блока в начало блока данных
-    out << quint16(block.size() - sizeof(quint16));
-
-    // Отправляем блок данных клиенту
-    clientSocket->write(block);
+void MyTcpServer::sendToClient(QString data) {
+    clientSocket->write(data.toUtf8());
 }
+
 
 // Слот, вызываемый при новом подключении клиента
 void MyTcpServer::slotNewConnection()
