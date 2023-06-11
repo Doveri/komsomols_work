@@ -12,6 +12,7 @@ QString getvariant(int n)
 }
 
 
+
 SecondTask::SecondTask(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::SecondTask)

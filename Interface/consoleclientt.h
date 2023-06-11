@@ -24,7 +24,7 @@ private:
         static SingClient * p_instance;
         static SingClientDestroyer destroyer;
         QTcpSocket* socket;
-        QString Message;
+        QString Message = "";
     protected:
         explicit SingClient();
         SingClient(const SingClient& ) = delete ;
@@ -33,7 +33,9 @@ private:
         friend class SingClientDestroyer;
     public:
         static SingClient* getInstance();
+        QString TakeMessage();
         QString sendToServer(const QString&);
+//        QString slot_readFromServer();
     protected slots:
         void slot_readFromServer();
     signals:

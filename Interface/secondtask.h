@@ -12,6 +12,7 @@ class SecondTask : public QDialog
     Q_OBJECT
 
 public:
+
     explicit SecondTask(QWidget *parent = nullptr);
     ~SecondTask();
     void setTaskNumber(int);

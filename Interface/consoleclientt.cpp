@@ -25,7 +25,7 @@ QString SingClient::sendToServer(const QString& msg)
 {
     try {
             socket->write(msg.toUtf8()); // отправляем данные на сервер
-            socket->waitForReadyRead();
+//            socket->waitForReadyRead();
             return Message;
         }
     catch (const std::exception& e){
@@ -47,6 +47,12 @@ void SingClient::slot_readFromServer()
     data.clear();
     Message = message;
     qDebug() << "Received message from server:" << message; // выводим сообщение в консоль
+}
+
+QString SingClient::TakeMessage(){
+
+    return Message;
+
 }
 SingClient * SingClient::p_instance;
 SingClientDestroyer SingClient::destroyer;

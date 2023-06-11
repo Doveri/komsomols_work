@@ -5,7 +5,9 @@ registration::registration(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::registration)
 {
+    this->client = SingClient::getInstance();
     ui->setupUi(this);
+    MW = parent;
 }
 
 registration::~registration()
@@ -13,22 +15,46 @@ registration::~registration()
     delete ui;
 }
 
-void registration::on_pushButton_clicked()
+
+void registration::on_auth_clicked()
 {
-    QString login = ui->login->text();
-    QString password = ui->pass->text();
-    if (reg(login, password) == 1){
+    login = ui->login->text();
+    password = ui->pass->text();
+    QString qauth = "auth " + login + " " + password;
+    if (client->sendToServer(qauth) == "User successfully authorized!"){
         QMessageBox::information(this, "Уведомление", "Авторизация прошла успешно");
-        close();
+        hide();
+        qDebug() << login;
+        MW->show();
     } else {
         QMessageBox::warning(this, "Уведомление", "Вы не авторизировались, попробуйте еще раз");
     }
 }
 
-bool registration::reg (QString log, QString pass){
-    if (log == "111" && pass == "222"){
-        return 1;
-    } else {
-        return 0;
-    }
+void registration::on_reg_clicked()
+{
+    login = ui->login->text();
+    password = ui->pass->text();
+    QString qr = "reg " + login + " " + password;
+    client->sendToServer(qr);
+
+}
+
+
+void registration::on_get_stats_clicked()
+{
+    login = ui->login->text();
+    password = ui->pass->text();
+//    QString qa = "auth " + login + " " + password;
+//    client->sendToServer(qa);
+//    qDebug() << qa;
+    QString qs = "get_stat " + login + " " + password;
+    qDebug() << qs;
+    client->sendToServer(qs);
+//    ui->stat->setText(client->TakeMessage());
+}
+
+void registration::on_Upload_clicked()
+{
+    ui->stat->setText(client->TakeMessage());
 }

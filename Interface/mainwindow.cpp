@@ -7,6 +7,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
     this->client = SingClient::getInstance();
     ui->setupUi(this);
+    RW = new registration(this);
+    RW->show();
+    TW = new tasksWindow;
+    TW->hide();
 }
 
 MainWindow::~MainWindow()
@@ -14,23 +18,68 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
 void MainWindow::on_FirstTask_clicked()
 {
-    client->sendToServer("get task");
-    ui->label->setText(client->sendToServer("showDB"));
+    QString qs = "get_task " + RW->login + " " + RW->password + " 1";
+    client->sendToServer(qs);
+
 }
+
+
+void MainWindow::on_get_stats_1_clicked()
+{
+    QString qs = "get_stats " + RW->login + " " + RW->password;
+    client->sendToServer(qs);
+}
+
+
+void MainWindow::on_update1_clicked()
+{
+
+    ui->one->setText(client->TakeMessage());
+}
+
 
 void MainWindow::on_SecondTask_clicked()
 {
-    client->sendToServer("get task");
-    ui->label_2->setText(client->sendToServer("showDB"));
+    QString qs = "get_task " + RW->login + " " + RW->password + " 2";
+    client->sendToServer(qs);
 }
+
+
+void MainWindow::on_get_stats_2_clicked()
+{
+    QString qs = "get_stats " + RW->login + " " + RW->password;
+    client->sendToServer(qs);
+}
+
+
+void MainWindow::on_update2_clicked()
+{
+    ui->two->setText(client->TakeMessage());
+}
+
 
 void MainWindow::on_ThirdTask_clicked()
 {
-    client->sendToServer("get task");
-    ui->label_3->setText(client->sendToServer("showDB"));
+    QString qs = "get_task " + RW->login + " " + RW->password + " 3";
+    client->sendToServer(qs);
 }
+
+
+void MainWindow::on_get_stats_3_clicked()
+{
+    QString qs = "get_stats " + RW->login + " " + RW->password;
+    client->sendToServer(qs);
+}
+
+
+void MainWindow::on_update3_clicked()
+{
+    ui->three->setText(client->TakeMessage());
+}
+
 
 void MainWindow::on_OutBut_clicked()
 {
