@@ -7,8 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>286</width>
-    <height>307</height>
+    <height>351</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
@@ -29,7 +35,7 @@
          <item>
           <widget class="QLabel" name="Name">
            <property name="text">
-            <string>Имя</string>
+            <string>Login</string>
            </property>
           </widget>
          </item>
@@ -43,7 +49,7 @@
          <item>
           <widget class="QLabel" name="Surname">
            <property name="text">
-            <string>Фамилия</string>
+            <string>Password</string>
            </property>
           </widget>
          </item>

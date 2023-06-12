@@ -8,6 +8,8 @@ registration::registration(QWidget *parent) :
     this->client = SingClient::getInstance();
     ui->setupUi(this);
     MW = parent;
+    ui->pass->setEchoMode(QLineEdit::Password);
+    setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
 }
 
 registration::~registration()
@@ -18,16 +20,19 @@ registration::~registration()
 
 void registration::on_auth_clicked()
 {
+    int i = 0;
     login = ui->login->text();
     password = ui->pass->text();
     QString qauth = "auth " + login + " " + password;
     if (client->sendToServer(qauth) == "User successfully authorized!"){
         QMessageBox::information(this, "Уведомление", "Авторизация прошла успешно");
         hide();
-        qDebug() << login;
         MW->show();
-    } else {
-        QMessageBox::warning(this, "Уведомление", "Вы не авторизировались, попробуйте еще раз");
+    } else if (i == 0){
+        i += 1;
+    }else {
+        QMessageBox::warning(this, "Уведомление", "Такого пользователя не существует, попробуйте еще раз");
+        i = 0;
     }
 }
 

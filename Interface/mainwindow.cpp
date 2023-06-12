@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     RW->show();
     TW = new tasksWindow;
     TW->hide();
+    setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
 }
 
 MainWindow::~MainWindow()
@@ -29,7 +30,7 @@ void MainWindow::on_FirstTask_clicked()
 
 void MainWindow::on_get_stats_1_clicked()
 {
-    QString qs = "get_stats " + RW->login + " " + RW->password;
+    QString qs = "get_stat " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 }
 
@@ -50,7 +51,7 @@ void MainWindow::on_SecondTask_clicked()
 
 void MainWindow::on_get_stats_2_clicked()
 {
-    QString qs = "get_stats " + RW->login + " " + RW->password;
+    QString qs = "get_stat " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 }
 
@@ -70,7 +71,7 @@ void MainWindow::on_ThirdTask_clicked()
 
 void MainWindow::on_get_stats_3_clicked()
 {
-    QString qs = "get_stats " + RW->login + " " + RW->password;
+    QString qs = "get_stat " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 }
 
