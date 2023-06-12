@@ -49,8 +49,8 @@ void SingClient::slot_readFromServer()
     qDebug() << "Received message from server:" << message; // выводим сообщение в консоль
 }
 
-QString SingClient::TakeMessage(){
-
+QString SingClient::TakeMessage()
+{
     return Message;
 
 }

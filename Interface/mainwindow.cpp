@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     RW->show();
     TW = new tasksWindow;
     TW->hide();
-    setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
+    //setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
 }
 
 MainWindow::~MainWindow()
