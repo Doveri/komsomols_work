@@ -11,7 +11,6 @@ MainWindow::MainWindow(QWidget *parent)
     RW->show();
     TW = new tasksWindow;
     TW->hide();
-    //setWindowFlags(Qt::Window | Qt::CustomizeWindowHint);
 }
 
 MainWindow::~MainWindow()
@@ -38,7 +37,13 @@ void MainWindow::on_get_stats_1_clicked()
 void MainWindow::on_update1_clicked()
 {
 
-    ui->one->setText(client->TakeMessage());
+    QString message = client->TakeMessage();
+    int maxCharsPerLine = 67;
+    for (int i = 0; i < message.size(); i += maxCharsPerLine) {
+        message.insert(i, "\n");
+    }
+    ui->one->setText(message);
+    ui->one->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
 
@@ -58,7 +63,13 @@ void MainWindow::on_get_stats_2_clicked()
 
 void MainWindow::on_update2_clicked()
 {
-    ui->two->setText(client->TakeMessage());
+    QString message = client->TakeMessage();
+    int maxCharsPerLine = 67;
+    for (int i = 0; i < message.size(); i += maxCharsPerLine) {
+        message.insert(i, "\n");
+    }
+    ui->two->setText(message);
+    ui->two->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
 
@@ -78,12 +89,39 @@ void MainWindow::on_get_stats_3_clicked()
 
 void MainWindow::on_update3_clicked()
 {
-    ui->three->setText(client->TakeMessage());
+    QString message = client->TakeMessage();
+    int maxCharsPerLine = 67;
+    for (int i = 0; i < message.size(); i += maxCharsPerLine) {
+        message.insert(i, "\n");
+    }
+    ui->three->setText(message);
+    ui->three->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }
 
 
 void MainWindow::on_OutBut_clicked()
 {
     close();
+}
+
+
+void MainWindow::on_ans1_clicked()
+{
+    client->sendToServer("check_answer " + RW->login + " " + RW->password + " 1 " + ui->ansOne->text());
+    qDebug() << "-----1-------";
+}
+
+
+void MainWindow::on_ans2_clicked()
+{
+    client->sendToServer("check_answer " + RW->login + " " + RW->password + " 2 " + ui->ansTwo->text());
+    qDebug() << "-----2-------";
+}
+
+
+void MainWindow::on_ans3_clicked()
+{
+    client->sendToServer("check_answer " + RW->login + " " + RW->password + " 3 " + ui->ansThree->text());
+    qDebug() << "-----3-------";
 }
 

@@ -40,6 +40,12 @@ private slots:
 
     void on_OutBut_clicked();
 
+    void on_ans1_clicked();
+
+    void on_ans2_clicked();
+
+    void on_ans3_clicked();
+
 private:
     Ui::MainWindow *ui;
     registration* RW;

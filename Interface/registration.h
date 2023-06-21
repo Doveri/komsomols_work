@@ -29,7 +29,7 @@ private slots:
     void on_Upload_clicked();
 
 private:
-    bool i = false;
+
     Ui::registration *ui;
     QWidget* MW;
 };

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>627</width>
-    <height>388</height>
+    <height>407</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -27,19 +27,33 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_2">
-    <item row="0" column="0">
+    <item row="1" column="0">
      <layout class="QGridLayout" name="gridLayout">
-      <item row="7" column="0">
-       <widget class="QPushButton" name="get_stats_3">
+      <item row="5" column="1">
+       <widget class="QPushButton" name="update2">
         <property name="text">
-         <string>Получить статистику по 3 заданию</string>
+         <string>Обновить</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QPushButton" name="SecondTask">
+      <item row="7" column="0">
+       <widget class="QLabel" name="one">
         <property name="text">
-         <string>Получить 2 задание</string>
+         <string>Не обновлено</string>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QPushButton" name="ans3">
+        <property name="text">
+         <string>Отправить ответ</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLineEdit" name="ansOne">
+        <property name="text">
+         <string/>
         </property>
        </widget>
       </item>
@@ -50,77 +64,112 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="one">
+      <item row="14" column="0">
+       <widget class="QPushButton" name="get_stats_3">
         <property name="text">
-         <string>Не обновлено</string>
+         <string>Получить статистику по 3 заданию</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="get_stats_1">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="ans1">
         <property name="text">
-         <string>Получить статистику по 1 заданию</string>
+         <string>Отправить ответ</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
+      <item row="3" column="1">
        <widget class="QPushButton" name="get_stats_2">
         <property name="text">
          <string>Получить статистику по 2 заданию</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QPushButton" name="update1">
-        <property name="text">
-         <string>Обновить</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="update2">
-        <property name="text">
-         <string>Обновить</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QPushButton" name="ThirdTask">
-        <property name="text">
-         <string>Получить 3 задание</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1" rowspan="4">
-       <widget class="QPushButton" name="OutBut">
-        <property name="text">
-         <string>Закрыть</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QLabel" name="two">
-        <property name="text">
-         <string>Не обновлено</string>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="three">
-        <property name="text">
-         <string>Не обновлено</string>
-        </property>
-       </widget>
-      </item>
-      <item row="8" column="0">
+      <item row="16" column="0">
        <widget class="QPushButton" name="update3">
         <property name="text">
          <string>Обновить</string>
         </property>
        </widget>
       </item>
+      <item row="12" column="0">
+       <widget class="QLineEdit" name="ansThree">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLabel" name="two">
+        <property name="text">
+         <string>Не обновлено</string>
+        </property>
+       </widget>
+      </item>
+      <item row="17" column="0">
+       <widget class="QLabel" name="three">
+        <property name="text">
+         <string>Не обновлено</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="ans2">
+        <property name="text">
+         <string>Отправить ответ</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QPushButton" name="ThirdTask">
+        <property name="text">
+         <string>Получить 3 задание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="ansTwo">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QPushButton" name="update1">
+        <property name="text">
+         <string>Обновить</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="SecondTask">
+        <property name="text">
+         <string>Получить 2 задание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="get_stats_1">
+        <property name="text">
+         <string>Получить статистику по 1 заданию</string>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="1" rowspan="7">
+       <widget class="QPushButton" name="OutBut">
+        <property name="text">
+         <string>Закрыть</string>
+        </property>
+       </widget>
+      </item>
      </layout>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Все ответы вводятся без пробелов</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>
