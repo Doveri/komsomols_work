@@ -7,8 +7,6 @@ QString parsing(QString request)
     QStringList parts = request.split(" ");
     QString command = parts[0];
     QString response = "";
-    QString pruferCodeAnswerString;
-    QString edgesAnswerString;
     // Обрабатываем различные команды
     if (command == "reg" && parts.size() == 3) {
         // Получаем логин и пароль пользователя из параметров команды
@@ -80,8 +78,6 @@ QString parsing(QString request)
             std::vector<std::pair<int, int>> stdEdges = getRandomStdEdges();
             std::vector<int> stdPruferCode = pruferCodeFromStdEdges(stdEdges);
             QVector<int> pruferCode(stdPruferCode.begin(), stdPruferCode.end());
-            pruferCodeAnswerString = pruferCodeToString(pruferCode);
-            pruferCodeAnswerString.remove(" ");
             for (const auto& edge : stdEdges)
             {
                 edges.append(QPair<int, int>(edge.first, edge.second));
@@ -125,8 +121,6 @@ QString parsing(QString request)
 
             // Декодируем код Прюфера
             QVector<QPair<int, int>> edges = pruferDecode(pruferCode);
-            edgesAnswerString = edgesToString(edges);
-            edgesAnswerString.remove(" ");
             // Преобразуем вектор кода Прюфера в строку
             QString pruferCodeString = pruferCodeToString(pruferCode);
 
