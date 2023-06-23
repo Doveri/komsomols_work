@@ -52,9 +52,6 @@ void MyTcpServer::slotServerRead()
     // Получаем указатель на сокет клиента, от которого пришли данные
     QTcpSocket* clientSocket = qobject_cast<QTcpSocket*>(sender());
 
-    // Проверяем, можно ли прочитать строку из сокета
-    if (!clientSocket->canReadLine()) return;
-
     // Читаем строку из сокета и выводим сообщение о запросе в консоль
     QString request;
     while (clientSocket->bytesAvailable()) {
@@ -62,8 +59,7 @@ void MyTcpServer::slotServerRead()
         request += QString::fromUtf8(data);
     }
     request = request.trimmed();
-    qDebug() << "Request received from client " << clientSocket->socketDescriptor() << ": " << request;
-
+    qDebug() << "Request received from client " << clientSocket->socketDescriptor() << ": " << request;    
     // Обрабатываем запрос и отправляем ответ клиенту
     QString response = parsing(request);
     clientSocket->write(response.toUtf8());

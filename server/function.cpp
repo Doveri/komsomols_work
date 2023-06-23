@@ -7,6 +7,8 @@ QString parsing(QString request)
     QStringList parts = request.split(" ");
     QString command = parts[0];
     QString response = "";
+    QString pruferCodeAnswerString;
+    QString edgesAnswerString;
     // Обрабатываем различные команды
     if (command == "reg" && parts.size() == 3) {
         // Получаем логин и пароль пользователя из параметров команды
@@ -68,17 +70,18 @@ QString parsing(QString request)
 
         // Если пользователь авторизован, получаем случайные ребра, генерируем код Прюфера и отправляем их клиенту
         if (authUser(login, password)) {
-//            QVector<QPair<int, int>> edges = getRandomEdges();
-//            QVector<QPair<int, int>> testEdges = {{1, 2}, {1, 7}, {1, 8}, {2, 6}, {3, 5}, {4, 5}, {5, 6}, {5, 9}};
-//            QVector<int> pruferCodeTest = pruferCodeFromEdges(testEdges);
-//            QString pruferCodeTestString = pruferCodeToString(pruferCodeTest);
-//            qDebug() << pruferCodeTestString;
+            //            QVector<QPair<int, int>> edges = getRandomEdges();
+            //            QVector<QPair<int, int>> testEdges = {{1, 2}, {1, 7}, {1, 8}, {2, 6}, {3, 5}, {4, 5}, {5, 6}, {5, 9}};
+            //            QVector<int> pruferCodeTest = pruferCodeFromEdges(testEdges);
+            //            QString pruferCodeTestString = pruferCodeToString(pruferCodeTest);
+            //            qDebug() << pruferCodeTestString;
             QVector<QPair<int, int>> edges;
 
             std::vector<std::pair<int, int>> stdEdges = getRandomStdEdges();
             std::vector<int> stdPruferCode = pruferCodeFromStdEdges(stdEdges);
             QVector<int> pruferCode(stdPruferCode.begin(), stdPruferCode.end());
-
+            pruferCodeAnswerString = pruferCodeToString(pruferCode);
+            pruferCodeAnswerString.remove(" ");
             for (const auto& edge : stdEdges)
             {
                 edges.append(QPair<int, int>(edge.first, edge.second));
@@ -122,7 +125,8 @@ QString parsing(QString request)
 
             // Декодируем код Прюфера
             QVector<QPair<int, int>> edges = pruferDecode(pruferCode);
-
+            edgesAnswerString = edgesToString(edges);
+            edgesAnswerString.remove(" ");
             // Преобразуем вектор кода Прюфера в строку
             QString pruferCodeString = pruferCodeToString(pruferCode);
 
@@ -162,9 +166,8 @@ QString parsing(QString request)
         //check answer
         QString login = parts[1];
         QString password = parts[2];
-        int taskType = parts[3].toInt();
         QString userAnswer = parts[4];
-        if (checkAnswer(login, password, taskType, userAnswer)) {
+        if (checkAnswer(userAnswer) && authUser(login, password)) {
             response = "Answer is correct!";
         } else {
             response = "Answer is incorrect!";
@@ -185,53 +188,28 @@ QString parsing(QString request)
     return response;
 }
 
-bool checkAnswer(QString login, QString password, int taskType, QString userAnswer)
+
+bool checkAnswer(QString userAnswer)
 {
     // Получаем объект класса Singleton для работы с базой данных
     Singleton& db = Singleton::getInstance();
-
+    bool answer = false;
     // Подготавливаем запрос на поиск пользователя в базе данных
     QSqlQuery q(db.db);
-    q.prepare("SELECT id, answers FROM tasks "
-              "INNER JOIN users ON tasks.user_id = users.id "
-              "WHERE users.login = :login AND users.password = :password AND tasks.task_type = :taskType");
-    q.bindValue(":login", login);
-    q.bindValue(":password", password);
-    q.bindValue(":taskType", taskType);
-
-    // Выполняем запрос и проверяем его результат
-    if (q.exec() && q.first()) {
-        int taskId = q.value(0).toInt();
-        QString correctAnswer = q.value(1).toString();
-
-        if (userAnswer == correctAnswer) {
-            // If the user's answer matches the correct answer, add +1 to the user's rating
-            QSqlQuery q2(db.db);
-            q2.prepare("UPDATE users SET rate = rate + 1 WHERE id = (SELECT user_id FROM tasks WHERE id = :taskId)");
-            q2.bindValue(":taskId", taskId);
-            if (q2.exec()) {
-                qDebug() << "User rating updated successfully";
-                return true;
-            } else {
-                qDebug() << "Failed to update user rating";
-                return false;
-            }
-        } else {
-            // If the user's answer doesn't match the correct answer, subtract -1 from the user's rating
-            QSqlQuery q2(db.db);
-            q2.prepare("UPDATE users SET rate = rate - 1 WHERE id = (SELECT user_id FROM tasks WHERE id = :taskId)");
-            q2.bindValue(":taskId", taskId);
-            if (q2.exec()) {
-                qDebug() << "User rating updated successfully";
-                return true;
-            } else {
-                qDebug() << "Failed to update user rating";
-                return false;
+    if (q.exec("SELECT * FROM tasks;"))
+    {
+        while (q.next()) // Iterate over the result set
+        {
+            // Get the values of each column and append them to the QStringList
+            QString answers = q.value(4).toString();
+            answers.remove(" ");
+            answers.remove(",");
+            if (answers == userAnswer){
+                answer = true;
             }
         }
     }
-    qDebug() << "Failed to retrieve task or user information";
-    return false;
+    return answer;
 }
 
 int checkRating(QString login, QString password)
@@ -506,8 +484,8 @@ std::vector<std::pair<int, int>> getRandomStdEdges() {
         int b = nums[i + 1];
         // Проверяем, что текущая пара вершин не повторяется и не похожа на уже добавленные.
         while (a == b || std::find_if(edges.begin(), edges.end(), [&](const auto& e) {
-            return (e.first == a && e.second == b) || (e.first == b && e.second == a);
-        }) != edges.end()) {
+                                      return (e.first == a && e.second == b) || (e.first == b && e.second == a);
+    }) != edges.end()) {
             std::shuffle(nums.begin(), nums.end(), g); // перемешиваем номера вершин
             a = nums[i];
             b = nums[i + 1];

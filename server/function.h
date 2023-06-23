@@ -47,7 +47,7 @@ int getUserId(QString login);
 void addTaskToDatabase(QString login, QVector<QPair<int, int>> edges, QVector<int> pruferCode, int taskType);
 QString edgesToString(QVector<QPair<int, int>> edges);
 QString pruferCodeToString(QVector<int> pruferCode);
-bool checkAnswer(QString login, QString password, int taskType, QString userAnswer);
+bool checkAnswer(QString userAnswer);
 int checkRating(QString login, QString password);
 
 #endif // FUNCTION_H
