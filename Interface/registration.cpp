@@ -27,10 +27,9 @@ void registration::on_auth_clicked()
         qDebug() << login;
         MW->show();
     } else {
-        QMessageBox::warning(this, "Уведомление", "Вы не авторизировались, попробуйте еще раз");
+    QMessageBox::warning(this, "Уведомление", "Вы не авторизировались, попробуйте еще раз");
     }
 }
-
 void registration::on_reg_clicked()
 {
     login = ui->login->text();
@@ -56,5 +55,11 @@ void registration::on_get_stats_clicked()
 
 void registration::on_Upload_clicked()
 {
-    ui->stat->setText(client->TakeMessage());
+    QString message = client->TakeMessage();
+    int maxCharsPerLine = 67;
+    for (int i = 0; i < message.size(); i += maxCharsPerLine) {
+        message.insert(i, "\n");
+    }
+    ui->stat->setText(message);
+    ui->stat->setAlignment(Qt::AlignTop | Qt::AlignLeft);
 }

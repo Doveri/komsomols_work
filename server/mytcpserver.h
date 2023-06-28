@@ -1,28 +1,42 @@
 #ifndef MYTCPSERVER_H
 #define MYTCPSERVER_H
-#include <QObject>
+
 #include <QTcpServer>
 #include <QTcpSocket>
-#include "singleton.h"
-#include <QtNetwork>
-#include <QByteArray>
 #include <QDebug>
-#include <QList>
-#include <QtSql>
+#include <QByteArray>
+#include <QDataStream>
 
-class MyTcpServer : public QObject{
+#include "singleton.h"
+#include "function.h"
+
+class MyTcpServer : public QTcpServer
+{
     Q_OBJECT
 public:
     explicit MyTcpServer(QObject *parent = nullptr);
-    ~MyTcpServer();
-public slots:
+
+private slots:
     void slotNewConnection();
     void slotClientDisconnected();
     void slotServerRead();
-    //void slotReadClient();
+    void connectToDatabase();
+    void sendToClient(QString data);
+    void close();
+
 private:
-    QTcpServer * mTcpServer;
-    QList<QTcpSocket*> mTcpSocket;
-    int server_status;
+    QTcpSocket* clientSocket;
+    QList<QTcpSocket*> clientSockets;
 };
+
 #endif // MYTCPSERVER_H
+
+//Этот файл реализует следующее:
+
+//Конструктор сервера, запускающий его на порту 8080
+//Обработчик нового подключения (slotNewConnection), сохраняющий сокет клиента и подключающий сигналы
+//Обработчик отключения клиента (slotClientDisconnected), удаляющий сокет
+//Обработчик чтения данных от сервера (slotServerRead), разбирающий запрос и вызывающий функцию parsing для его обработки
+//Обработчик чтения данных от клиента (slotReadClient), аналогичный предыдущему но для запросов от клиента
+//Метод connectToDatabase для подключения к БД через singleton
+//Этот класс позволяет реализовать основную логику сервера - принимать подключения, читать запросы и обрабатывать их, подключаться к БД.

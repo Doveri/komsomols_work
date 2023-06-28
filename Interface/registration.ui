@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>286</width>
-    <height>307</height>
+    <height>351</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -29,7 +29,7 @@
          <item>
           <widget class="QLabel" name="Name">
            <property name="text">
-            <string>Имя</string>
+            <string>Login</string>
            </property>
           </widget>
          </item>
@@ -41,14 +41,18 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
-          <widget class="QLabel" name="Surname">
+          <widget class="QLabel" name="Password">
            <property name="text">
-            <string>Фамилия</string>
+            <string>Password</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QLineEdit" name="pass"/>
+          <widget class="QLineEdit" name="pass">
+           <property name="echoMode">
+            <enum>QLineEdit::Password</enum>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

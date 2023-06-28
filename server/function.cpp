@@ -1,5 +1,8 @@
 #include "function.h"
 
+
+struct Edge;
+
 // Метод для обработки запросов
 QString parsing(QString request)
 {
@@ -68,17 +71,16 @@ QString parsing(QString request)
 
         // Если пользователь авторизован, получаем случайные ребра, генерируем код Прюфера и отправляем их клиенту
         if (authUser(login, password)) {
-//            QVector<QPair<int, int>> edges = getRandomEdges();
-//            QVector<QPair<int, int>> testEdges = {{1, 2}, {1, 7}, {1, 8}, {2, 6}, {3, 5}, {4, 5}, {5, 6}, {5, 9}};
-//            QVector<int> pruferCodeTest = pruferCodeFromEdges(testEdges);
-//            QString pruferCodeTestString = pruferCodeToString(pruferCodeTest);
-//            qDebug() << pruferCodeTestString;
+            //            QVector<QPair<int, int>> edges = getRandomEdges();
+            //            QVector<QPair<int, int>> testEdges = {{1, 2}, {1, 7}, {1, 8}, {2, 6}, {3, 5}, {4, 5}, {5, 6}, {5, 9}};
+            //            QVector<int> pruferCodeTest = pruferCodeFromEdges(testEdges);
+            //            QString pruferCodeTestString = pruferCodeToString(pruferCodeTest);
+            //            qDebug() << pruferCodeTestString;
             QVector<QPair<int, int>> edges;
 
             std::vector<std::pair<int, int>> stdEdges = getRandomStdEdges();
             std::vector<int> stdPruferCode = pruferCodeFromStdEdges(stdEdges);
             QVector<int> pruferCode(stdPruferCode.begin(), stdPruferCode.end());
-
             for (const auto& edge : stdEdges)
             {
                 edges.append(QPair<int, int>(edge.first, edge.second));
@@ -122,7 +124,6 @@ QString parsing(QString request)
 
             // Декодируем код Прюфера
             QVector<QPair<int, int>> edges = pruferDecode(pruferCode);
-
             // Преобразуем вектор кода Прюфера в строку
             QString pruferCodeString = pruferCodeToString(pruferCode);
 
@@ -136,13 +137,24 @@ QString parsing(QString request)
         }
     } else if (command == "get_task" && parts[1] == "3" && parts.size() == 4) {
         // Получаем логин и пароль пользователя из параметров команды
+        // Если пользователь авторизован, вызываем функцию get_task3() и отправляем ее результат клиенту
         QString login = parts[2];
         QString password = parts[3];
-
-        // Если пользователь авторизован, вызываем функцию get_task3() и отправляем ее результат клиенту
+        std::vector<Edge> generatedVariant;
+        std::vector<Edge> answer;
+        QString generatedVariantString;
+        QString answerString;
         if (authUser(login, password)) {
-            QString task3 = get_task3(login, password);
-            response = task3;
+            generatedVariant = getTask3();
+            answer = findLowestWeightedFrame(6, generatedVariant);
+            for (const Edge &edge : generatedVariant) {
+                generatedVariantString += QString::number(edge.u) + "," + QString::number(edge.v) + "," + QString::number(edge.weight) + " ";
+            }
+            for (const Edge &edge : answer) {
+                answerString += QString::number(edge.u) + "," + QString::number(edge.v) + "," + QString::number(edge.weight) + " ";
+            }
+            addTask3ToDatabase(login, password, generatedVariantString, answerString, 3);
+            response = "Edges: " + generatedVariantString;
         } else {
             response = "You are not authorized!";
         }
@@ -162,9 +174,8 @@ QString parsing(QString request)
         //check answer
         QString login = parts[1];
         QString password = parts[2];
-        int taskType = parts[3].toInt();
         QString userAnswer = parts[4];
-        if (checkAnswer(login, password, taskType, userAnswer)) {
+        if (checkAnswer(userAnswer) && authUser(login, password)) {
             response = "Answer is correct!";
         } else {
             response = "Answer is incorrect!";
@@ -185,53 +196,47 @@ QString parsing(QString request)
     return response;
 }
 
-bool checkAnswer(QString login, QString password, int taskType, QString userAnswer)
+void addTask3ToDatabase(QString login, QString password, QString taskData, QString answer, int taskType){
+    Singleton& db = Singleton::getInstance();
+    QSqlQuery q(db.db);
+    q.prepare("INSERT INTO tasks (user_id, task_type, task_data, answers) VALUES (:user_id, :task_type, :task_data, :answers);");
+    q.bindValue(":user_id", getUserId(login));
+    q.bindValue(":task_type", taskType);
+    // Добавляем сгенерированный список ребер в качестве task_data
+    q.bindValue(":task_data", taskData);
+
+    // Добавляем сгенерированный код Прюфера в качестве answers
+    q.bindValue(":answers", answer);
+
+    bool success = q.exec();
+    if (success) {
+        qDebug() << "Task added to database!";
+    } else {
+        qDebug() << "Error adding task to database: " << q.lastError().text();
+    }
+}
+
+bool checkAnswer(QString userAnswer)
 {
     // Получаем объект класса Singleton для работы с базой данных
     Singleton& db = Singleton::getInstance();
-
+    bool answer = false;
     // Подготавливаем запрос на поиск пользователя в базе данных
     QSqlQuery q(db.db);
-    q.prepare("SELECT id, answers FROM tasks "
-              "INNER JOIN users ON tasks.user_id = users.id "
-              "WHERE users.login = :login AND users.password = :password AND tasks.task_type = :taskType");
-    q.bindValue(":login", login);
-    q.bindValue(":password", password);
-    q.bindValue(":taskType", taskType);
-
-    // Выполняем запрос и проверяем его результат
-    if (q.exec() && q.first()) {
-        int taskId = q.value(0).toInt();
-        QString correctAnswer = q.value(1).toString();
-
-        if (userAnswer == correctAnswer) {
-            // If the user's answer matches the correct answer, add +1 to the user's rating
-            QSqlQuery q2(db.db);
-            q2.prepare("UPDATE users SET rate = rate + 1 WHERE id = (SELECT user_id FROM tasks WHERE id = :taskId)");
-            q2.bindValue(":taskId", taskId);
-            if (q2.exec()) {
-                qDebug() << "User rating updated successfully";
-                return true;
-            } else {
-                qDebug() << "Failed to update user rating";
-                return false;
-            }
-        } else {
-            // If the user's answer doesn't match the correct answer, subtract -1 from the user's rating
-            QSqlQuery q2(db.db);
-            q2.prepare("UPDATE users SET rate = rate - 1 WHERE id = (SELECT user_id FROM tasks WHERE id = :taskId)");
-            q2.bindValue(":taskId", taskId);
-            if (q2.exec()) {
-                qDebug() << "User rating updated successfully";
-                return true;
-            } else {
-                qDebug() << "Failed to update user rating";
-                return false;
+    if (q.exec("SELECT * FROM tasks;"))
+    {
+        while (q.next()) // Iterate over the result set
+        {
+            // Get the values of each column and append them to the QStringList
+            QString answers = q.value(4).toString();
+            answers.remove(" ");
+            answers.remove(",");
+            if (answers == userAnswer){
+                answer = true;
             }
         }
     }
-    qDebug() << "Failed to retrieve task or user information";
-    return false;
+    return answer;
 }
 
 int checkRating(QString login, QString password)
@@ -506,8 +511,8 @@ std::vector<std::pair<int, int>> getRandomStdEdges() {
         int b = nums[i + 1];
         // Проверяем, что текущая пара вершин не повторяется и не похожа на уже добавленные.
         while (a == b || std::find_if(edges.begin(), edges.end(), [&](const auto& e) {
-            return (e.first == a && e.second == b) || (e.first == b && e.second == a);
-        }) != edges.end()) {
+                                      return (e.first == a && e.second == b) || (e.first == b && e.second == a);
+    }) != edges.end()) {
             std::shuffle(nums.begin(), nums.end(), g); // перемешиваем номера вершин
             a = nums[i];
             b = nums[i + 1];
@@ -610,30 +615,29 @@ QVector<QPair<int,int>> pruferDecode(QVector<int> c)
     return nodes;
 }
 
-// Define comparison function for sorting edges by weight
 bool cmp(Edge a, Edge b) {
     return a.weight < b.weight;
 }
 
 // Function to find parent of vertex
-int findParent(int v, QVector<int>& parent) {
+int findParent(int v, std::vector<int>& parent) {
     if (v == parent[v]) return v;
     return parent[v] = findParent(parent[v], parent);
 }
 
 // Function to join two components
-void join(int u, int v, QVector<int>& parent) {
+void join(int u, int v, std::vector<int>& parent) {
     u = findParent(u, parent);
     v = findParent(v, parent);
     if (u != v) parent[u] = v;
 }
 
 // Function to find lowest weighted frame using Kruskal's algorithm
-QVector<Edge> findLowestWeightedFrame(int n, QVector<Edge>& edges) {
-    QVector<Edge> frame;
-    QVector<int> parent(n+1);
+std::vector<Edge> findLowestWeightedFrame(int n, std::vector<Edge>& edges) {
+    std::vector<Edge> frame;
+    std::vector<int> parent(n+1);
     for (int i = 1; i <= n; i++) parent[i] = i;
-    std::sort(edges.begin(), edges.end(), cmp);
+    sort(edges.begin(), edges.end(), cmp);
     for (auto e : edges) {
         if (findParent(e.u, parent) != findParent(e.v, parent)) {
             frame.push_back(e);
@@ -643,7 +647,20 @@ QVector<Edge> findLowestWeightedFrame(int n, QVector<Edge>& edges) {
     return frame;
 }
 
-
+std::vector<Edge> getTask3 (){
+    std::vector<Edge> edges;
+    for (int i = 1; i <= 6; i++) {
+        for (int j = i + 1; j <= 6; j++) {
+            int weight = rand() % 12;
+            if (weight < 3)
+            {
+                continue;
+            }
+            edges.push_back({ i, j, weight });
+        }
+    }
+    return edges;
+}
 
 QString edgesToString(QVector<QPair<int, int>> edges) {
     QStringList edgeStrings;
@@ -661,11 +678,6 @@ QString pruferCodeToString(QVector<int> pruferCode) {
     return pruferCodeStringList.join(" ");
 }
 
-// Stub for get_task3()
-QString get_task3(QString login, QString password)
-{
-    return "Task 3: place to generate a variant for " + login + password;
-}
 
 // Stub for get_task4()
 QString get_task4(QString login, QString password)

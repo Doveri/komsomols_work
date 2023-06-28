@@ -1,74 +1,73 @@
-#include "mytcpserver.h"
 #include "singleton.h"
 
-Singleton * Singleton::p_instance;
-SingletonDestroyer Singleton::destroyer;
+// Это реализация паттерна Singleton, который гарантирует, что у нас будет только один экземпляр класса
+Singleton& Singleton::getInstance()
+{
+    // Создаем статический объект instance при первом вызове getInstance()
+    static Singleton instance;
+    return instance;
+}
 
-Singleton::Singleton() {
+// Метод для соединения с базой данных
+bool Singleton::connectToDB()
+{
+    // добавляем драйвер базы данных и задаем имя базы данных
     db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName("C:/workdir/komsomols_work/singleton/sqlite.db");
-    openDB();
-}
+    db.setDatabaseName("./database.db");
 
-void SingletonDestroyer::initialize(Singleton * p) {
-    p_instance = p;
-}
-
-bool Singleton::connect(const QString& databasePath)
-{
-    // Подключение к базе данных
-    return connectToDatabase(databasePath);
-}
-
-bool Singleton::openDB() {
-    if (!db.open()){
-        qDebug() << "Failed to connect to database :(";
-        return false;
-    }
-    return true;
-}
-
-
-QString Singleton::query(QString qw) {
-    if (!openDB()) {
-            qDebug() << "Failed to open database :(";
-            return "uwu";
-        }
-
-        QSqlQuery sqlQuery(db);
-        if (!sqlQuery.exec(qw)) {
-            qDebug() << "Failed to execute query: ";
-            return "uwu";
-        }
-
-        QString result = "This is your lovely data :*";
-        while (sqlQuery.next()) {
-            for(int i=0;i<sqlQuery.record().count();i++)
-                result.append(sqlQuery.value(i).toString()).append("|");
-            result.right(1);
-            result.append("\n");
-        }
-        qDebug()<<result;
-
-        return result;
-}
-
-bool Singleton::connectToDatabase(const QString& databasePath)
-{
-    // Создание объекта QSqlDatabase с именем "database"
-    db = QSqlDatabase::addDatabase("QSQLITE", "database");
-
-    // Установка пути к файлу базы данных
-    db.setDatabaseName(databasePath);
-
-    // Открытие базы данных
+    // проверяем, удалось ли открыть базу данных
     if (!db.open()) {
-        qDebug() << "Failed to connect to database." << db.lastError().text();
+        qDebug() << "Database not connected!";
+        qDebug() << db.lastError().text();
         return false;
     }
 
-    qDebug() << "Connected to database.";
+    // Проверяем, существует ли таблица "users"
+    QSqlQuery query(db);
+    bool success = query.exec("CREATE TABLE IF NOT EXISTS users ("
+                              "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                              "login TEXT NOT NULL,"
+                              "password TEXT NOT NULL,"
+                              "rate INTEGER DEFAULT 0"
+                              ");");
 
+    if (!success) {
+        qDebug() << "Error creating table 'users': " << query.lastError().text();
+        db.close();
+        return false;
+    }
+
+    // Проверяем, существует ли таблица "tasks"
+    success = query.exec("CREATE TABLE IF NOT EXISTS tasks ("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                          "user_id INTEGER NOT NULL,"
+                          "task_type INTEGER NOT NULL,"
+                          "task_data TEXT NOT NULL,"
+                          "answers TEXT,"
+                          "FOREIGN KEY (user_id) REFERENCES users(id)"
+                          ");");
+
+    if (!success) {
+        qDebug() << "Error creating table 'tasks': " << query.lastError().text();
+        db.close();
+        return false;
+    }
+
+    qDebug() << "Database connected!";
     return true;
 }
 
+// Метод для закрытия соединения с базой данных
+void Singleton::close()
+{
+    db.close();
+    qDebug() << "Connection to database closed!";
+}
+
+// Конструктор класса Singleton
+Singleton::Singleton() {}
+
+// Закрываем конструктор копирования и оператор присваивания, чтобы не создавать дубликаты объектов
+Singleton::Singleton(Singleton const&)  {}
+
+void Singleton::operator=(Singleton const&)  {}

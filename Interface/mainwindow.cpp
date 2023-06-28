@@ -21,7 +21,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_FirstTask_clicked()
 {
-    QString qs = "get_task " + RW->login + " " + RW->password + " 1";
+    QString qs = "get_task 1 " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 
 }
@@ -49,7 +49,7 @@ void MainWindow::on_update1_clicked()
 
 void MainWindow::on_SecondTask_clicked()
 {
-    QString qs = "get_task " + RW->login + " " + RW->password + " 2";
+    QString qs = "get_task 2 " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 }
 
@@ -75,7 +75,7 @@ void MainWindow::on_update2_clicked()
 
 void MainWindow::on_ThirdTask_clicked()
 {
-    QString qs = "get_task " + RW->login + " " + RW->password + " 3";
+    QString qs = "get_task 3 " + RW->login + " " + RW->password;
     client->sendToServer(qs);
 }
 
@@ -101,6 +101,7 @@ void MainWindow::on_update3_clicked()
 
 void MainWindow::on_OutBut_clicked()
 {
+    client->sendToServer("clean_db");
     close();
 }
 

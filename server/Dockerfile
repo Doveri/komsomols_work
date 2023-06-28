@@ -1,20 +1,9 @@
-FROM ubuntu
+FROM kusharami/qt5-alpine-dev:latest
 
-ENV TZ=Europe/Moscow
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+WORKDIR /server/server
+COPY . .
 
-RUN apt-get update
-RUN apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools -y
-RUN apt-get install build-essential -y
-
-WORKDIR /root/
-RUN mkdir server
-WORKDIR /root/server/
-COPY *.cpp /root/server/
-COPY *.h /root/server/
-COPY *.pro /root/server/
-
-RUN qmake echoServer.pro
+RUN qmake echoServer_351.pro
 RUN make
 
-ENTRYPOINT ["./echoServer"]
+ENTRYPOINT ["./echoServer_351"]
